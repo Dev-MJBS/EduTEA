@@ -1,0 +1,11 @@
+{
+  "name": "EduTEA",
+  "short_name": "EduTEA",
+  "start_url": "/EduTEA/",
+  "scope": "/EduTEA/",
+  "display": "standalone",
+  "background_color": "#0f172a",
+  "theme_color": "#2563eb",
+  "description": "Hand gesture-controlled letter game",
+  "icons": []
+}

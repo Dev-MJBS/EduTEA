@@ -1,4 +1,18 @@
+// ============================================
+// BACKEND CONFIGURATION FOR PAGES DEPLOYMENT
+// ============================================
+// Change BACKEND_URL to your deployed backend
+const BACKEND_URL = (
+  window.location.hostname === 'localhost' || 
+  window.location.hostname === '127.0.0.1'
+) 
+  ? 'http://127.0.0.1:5010'
+  : 'http://127.0.0.1:5010'; // ← UPDATE THIS to your remote backend URL
+  // Example: 'https://edutea-backend.onrender.com'
+
+// ============================================
 // Basic game state
+// ============================================
 const canvas = document.getElementById('gameCanvas');
 const ctx = canvas.getContext('2d');
 const socketStatusEl = document.getElementById('socketStatus');
@@ -358,7 +372,7 @@ function checkWin() {
 }
 
 // SocketIO setup (include polling fallback for Safari)
-const socket = io({ transports: ['websocket', 'polling'] });
+const socket = io(BACKEND_URL, { transports: ['websocket', 'polling'] });
 
 socket.on('connect', () => {
   socketStatusEl.textContent = 'Conectado';
