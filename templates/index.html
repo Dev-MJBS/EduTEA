@@ -11,6 +11,9 @@
   <div id="configScreen" class="screen">
     <div class="config-container">
       <h1>Configuração do Jogo - Professor</h1>
+      <p style="color: #a7f3d0; font-size: 14px; margin-bottom: 16px;">
+        Backend rodando em http://127.0.0.1:5010
+      </p>
       <input type="text" id="inputWord" placeholder="Digite a palavra (mínimo 3 letras)" />
       <button id="startGameButton">INICIAR JOGO E EMBARALHAR</button>
     </div>
@@ -19,7 +22,7 @@
   <!-- Tela de Jogo -->
   <div id="gameScreen" class="screen hidden">
     <section id="left">
-      <h2>Vídeo (OpenCV)</h2>
+      <h2>Vídeo (Webcam)</h2>
       <img id="video" src="/video_feed" alt="Video Feed" />
       <div class="row">
         <span>Socket:</span>
@@ -71,7 +74,6 @@
           <button id="resetBtn" style="padding:6px 10px;">Resetar Jogo</button>
         </div>
         <audio id="sndPlace" src="https://actions.google.com/sounds/v1/cartoon/wood_plank_flicks.ogg"></audio>
-        <audio id="sndWin" src="https://actions.google.com/sounds/v1/cartoon/concussive_hit_guitar_boing.ogg"></audio>
         <audio id="sndError" src="https://actions.google.com/sounds/v1/cartoon/boing.ogg"></audio>
       </div>
     </section>

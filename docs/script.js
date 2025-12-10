@@ -1,14 +1,10 @@
 // ============================================
-// BACKEND CONFIGURATION FOR PAGES DEPLOYMENT
+// BACKEND CONFIGURATION
 // ============================================
-// Change BACKEND_URL to your deployed backend
-const BACKEND_URL = (
-  window.location.hostname === 'localhost' || 
-  window.location.hostname === '127.0.0.1'
-) 
-  ? 'http://127.0.0.1:5010'
-  : 'http://127.0.0.1:5010'; // ← UPDATE THIS to your remote backend URL
-  // Example: 'https://edutea-backend.onrender.com'
+// Para GitHub Pages, mude para seu backend remoto:
+// const BACKEND_URL = 'https://seu-backend.onrender.com';
+// Por padrão, conecta ao localhost (máquina local)
+const BACKEND_URL = '';  // deixar vazio = usa localhost:5010
 
 // ============================================
 // Basic game state
