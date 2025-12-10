@@ -1,0 +1,8 @@
+opencv-python>=4.10.0
+mediapipe>=0.10.14
+Flask>=3.0.0
+Flask-SocketIO>=5.3.6
+Flask-CORS>=4.0.0
+eventlet>=0.36.1
+gunicorn>=21.0.0
+numpy>=1.26.0

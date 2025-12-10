@@ -1,0 +1,82 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>EduTEA PyVision</title>
+  <link rel="stylesheet" href="./style.css" />
+</head>
+<body>
+  <!-- Tela de Configuração -->
+  <div id="configScreen" class="screen">
+    <div class="config-container">
+      <h1>Configuração do Jogo - Professor</h1>
+      <input type="text" id="inputWord" placeholder="Digite a palavra (mínimo 3 letras)" />
+      <button id="startGameButton">INICIAR JOGO E EMBARALHAR</button>
+    </div>
+  </div>
+
+  <!-- Tela de Jogo -->
+  <div id="gameScreen" class="screen hidden">
+    <section id="left">
+      <h2>Vídeo (OpenCV)</h2>
+      <img id="video" src="" alt="Video Feed" />
+      <div class="row">
+        <span>Socket:</span>
+        <span id="socketStatus" class="status">Conectando...</span>
+      </div>
+      <div class="row">
+        <span>URL:</span>
+        <span id="serverUrl" class="status">Detectando porta...</span>
+      </div>
+      <div class="row">
+        <span>Wrist:</span>
+        <span id="wristXY" class="status">-</span>
+      </div>
+      <div class="row">
+        <span>Grasp:</span>
+        <span id="grasp" class="status">-</span>
+      </div>
+      <div class="row">
+        <span>Detecção:</span>
+        <span id="detection" class="status">-</span>
+      </div>
+    </section>
+    <section id="right">
+      <h2>Canvas: Letras</h2>
+      <canvas id="gameCanvas" width="800" height="400"></canvas>
+      <div class="row">
+        <span>Palavra alvo:</span>
+        <span id="targetWord" class="status">CAB</span>
+      </div>
+      <div class="row">
+        <span>Tempo:</span>
+        <span id="timer" class="status">00:00</span>
+        <span style="margin-left:12px;">Tentativas:</span>
+        <span id="attempts" class="status">0</span>
+      </div>
+      <div style="margin-top:12px; display:grid; gap:8px; grid-template-columns: 1fr 1fr;">
+        <div>
+          <label for="wordInput">Nova palavra:</label>
+          <input id="wordInput" type="text" placeholder="Ex.: CASA" style="width:100%; padding:6px;" />
+        </div>
+        <div>
+          <button id="applyWordBtn" style="padding:6px 10px;">Aplicar & Embaralhar</button>
+        </div>
+        <div>
+          <label for="cursorSize">Tamanho do cursor:</label>
+          <input id="cursorSize" type="range" min="8" max="24" value="12" />
+        </div>
+        <div>
+          <button id="resetBtn" style="padding:6px 10px;">Resetar Jogo</button>
+        </div>
+        <audio id="sndPlace" src="https://actions.google.com/sounds/v1/cartoon/wood_plank_flicks.ogg"></audio>
+        <audio id="sndError" src="https://actions.google.com/sounds/v1/cartoon/boing.ogg"></audio>
+      </div>
+    </section>
+  </div>
+
+  <script src="https://cdn.socket.io/4.7.5/socket.io.min.js"></script>
+  <script src="./script.js"></script>
+</body>
+</html>
