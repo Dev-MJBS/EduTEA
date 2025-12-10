@@ -6,7 +6,8 @@ Desktop & Web app that uses Python (OpenCV + MediaPipe + Flask-SocketIO) for han
 
 **Frontend (GitHub Pages):** https://dev-mjbs.github.io/EduTEA/
 
-> ⚠️ **Note:** Frontend alone won't work. You need a running backend server.
+> ⚠️ **Currently:** Frontend-only (backend needs to be deployed)  
+> **See [DEPLOY.md](DEPLOY.md) for quick 3-step backend deployment on Render (free)**
 
 ## Features
 - 📹 Camera capture via OpenCV
