@@ -408,11 +408,11 @@ socket.on('gesture_data', (data) => {
   }
 
   // NEW MECHANIC: Simple click-based selection
-  // When hand is detected over a letter and then OPENS = click that letter
+  // When hand JUST opened (releaseFrames became 1) = click
   let justClicked = false;
   
-  if (!cursorGrabbing && grabFrames === 0 && minHoldFrames > 0) {
-    // Hand just opened (after being closed) - detect click
+  if (releaseFrames === 1 && minHoldFrames > 0) {
+    // Hand just opened - detect click
     const current = letters[selectedIndex];
     if (isInsideLetter(pos.x, pos.y, current) && !current.placed) {
       // Click on selected letter
