@@ -35,6 +35,4 @@ def detect_grasp(hand_landmarks) -> bool:
     pinch = _distance(lm[THUMB_TIP], lm[INDEX_TIP]) < 0.08
 
     # Grasp if 2+ fingers folded OR pinch detected
-    # INVERTED: Return the opposite (mão aberta = false, mão fechada = true)
-    is_closed = folded_count >= 2 or pinch
-    return not is_closed
+    return folded_count >= 2 or pinch
