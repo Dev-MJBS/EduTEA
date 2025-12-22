@@ -173,6 +173,7 @@ async function handleStartGame() {
         selected: false,
         placed: false,
         slotIndex: null,
+        color: letterColors[i % letterColors.length],
       }));
       selectedIndex = 0;
       letters[selectedIndex].selected = true;
@@ -279,10 +280,10 @@ function mapToCanvas(wx, wy) {
 }
 
 function isInsideLetter(x, y, letter) {
-  // Generous hit-box around the letter (easy for kids)
-  const w = 60; // text width approximation
-  const h = 70; // text height
-  return x >= (letter.x - 30) && x <= (letter.x + w) && y >= (letter.y - h) && y <= (letter.y + 20);
+  // Large hit-box around the letter (easy for kids to click even when not perfectly centered)
+  const w = 120; // text width approximation (very generous)
+  const h = 140; // text height (very generous)
+  return x >= (letter.x - 60) && x <= (letter.x + w) && y >= (letter.y - h) && y <= (letter.y + 50);
 }
 
 function isInsideDropZone(x, y) {
@@ -318,6 +319,7 @@ applyWordBtn?.addEventListener('click', () => {
       selected: false,
       placed: false,
       slotIndex: null,
+      color: letterColors[i % letterColors.length],
     }));
     selectedIndex = 0;
     letters[selectedIndex].selected = true;
@@ -351,6 +353,7 @@ applyWordBtn?.addEventListener('click', () => {
       selected: false,
       placed: false,
       slotIndex: null,
+      color: letterColors[i % letterColors.length],
     }));
     selectedIndex = 0;
     letters[selectedIndex].selected = true;
