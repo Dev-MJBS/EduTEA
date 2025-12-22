@@ -54,6 +54,7 @@ letters[selectedIndex].selected = true;
 const dropZone = null;
 let cursorPos = { x: canvas.width / 2, y: canvas.height / 2 };
 let cursorGrabbing = false;
+let prevCursorGrabbing = false;  // Track previous frame for transition detection
 // Debounce state for grasp start/end to avoid flicker
 let grabFrames = 0;
 let releaseFrames = 0;
@@ -408,11 +409,11 @@ socket.on('gesture_data', (data) => {
   }
 
   // NEW MECHANIC: Simple click-based selection
-  // Click when hand CLOSES (becomes grabbing)
+  // Click only when hand TRANSITIONS from open to closed
   let justClicked = false;
   
-  if (cursorGrabbing && grabFrames === GRAB_ON_THRESHOLD) {
-    // Hand just closed - detect click
+  if (cursorGrabbing && !prevCursorGrabbing) {
+    // Hand just closed (transition from open to closed)
     const current = letters[selectedIndex];
     if (isInsideLetter(pos.x, pos.y, current) && !current.placed) {
       // Click on selected letter
@@ -458,6 +459,9 @@ socket.on('gesture_data', (data) => {
       }
     }
   }
+
+  // Update previous state for next frame
+  prevCursorGrabbing = cursorGrabbing;
 
   draw();
 
