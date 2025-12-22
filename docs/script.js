@@ -52,7 +52,6 @@ letters[selectedIndex].selected = true;
 
 // Optional parking area disabled for ordered placement; keep for future use
 const dropZone = null;
-let draggingIndex = null;
 let cursorPos = { x: canvas.width / 2, y: canvas.height / 2 };
 let cursorGrabbing = false;
 // Debounce state for grasp start/end to avoid flicker
@@ -224,12 +223,6 @@ function draw() {
     ctx.fillStyle = color;
     ctx.font = 'bold 48px system-ui';
     ctx.fillText(letter.char, letter.x, letter.y);
-    // Dragging outline
-    if (letter.selected && draggingIndex !== null && letters[draggingIndex] === letter) {
-      ctx.strokeStyle = '#fde68a';
-      ctx.lineWidth = 2;
-      ctx.strokeRect(letter.x - 12, letter.y - 52, 44, 64);
-    }
   }
 
   // Draw wrist cursor trail for motion visualization
@@ -351,7 +344,6 @@ applyWordBtn?.addEventListener('click', () => {
     selectedIndex = 0;
     letters[selectedIndex].selected = true;
     slots = { x: 200, y: canvas.height - 160, width: 60, height: 60, gap: 16, count: baseLetters.length };
-    draggingIndex = null;
     attempts = 0;
     startTime = Date.now();
     draw();
@@ -414,66 +406,56 @@ socket.on('gesture_data', (data) => {
       minHoldFrames = 0;
     }
   }
-  const current = letters[selectedIndex];
 
-  // Click-and-hold behavior: fechar a mão = clicar/segurar; abrir = soltar
-  if (cursorGrabbing || (!detected && draggingIndex !== null)) {
-    if (draggingIndex === null) {
-      // Start dragging if wrist is over a letter (prefer selected, fallback any)
-      if (isInsideLetter(pos.x, pos.y, current) && !current.placed) {
-        draggingIndex = selectedIndex;
-      } else {
-        for (let i = 0; i < letters.length; i++) {
-          if (!letters[i].placed && isInsideLetter(pos.x, pos.y, letters[i])) {
-            draggingIndex = i;
-            // update selection to the dragged letter
-            letters[selectedIndex].selected = false;
-            selectedIndex = i;
-            letters[selectedIndex].selected = true;
-            break;
-          }
+  // NEW MECHANIC: Simple click-based selection
+  // When hand is detected over a letter and then closed = click that letter
+  let justClicked = false;
+  
+  if (cursorGrabbing && releaseFrames === 0) {
+    // Hand just closed - detect click
+    const current = letters[selectedIndex];
+    if (isInsideLetter(pos.x, pos.y, current) && !current.placed) {
+      // Click on selected letter
+      justClicked = true;
+    } else {
+      // Check if clicking on any other letter
+      for (let i = 0; i < letters.length; i++) {
+        if (!letters[i].placed && isInsideLetter(pos.x, pos.y, letters[i])) {
+          // Select and click this letter
+          letters[selectedIndex].selected = false;
+          selectedIndex = i;
+          letters[selectedIndex].selected = true;
+          justClicked = true;
+          break;
         }
       }
     }
-    if (draggingIndex !== null) {
-      letters[draggingIndex].x = pos.x;
-      letters[draggingIndex].y = pos.y;
-    }
-  } else {
-    // On release, if dragging, check slot or drop zone
-    // Only release once we've seen enough consecutive release frames AND detection is active
-    // Only release after a stable open and active detection
-    if (draggingIndex !== null && releaseFrames >= GRAB_OFF_THRESHOLD && detected && !cursorGrabbing) {
-      const letter = letters[draggingIndex];
-      const slotHit = hitTestSlot(letter.x, letter.y);
-      console.log(`[Release] Letter '${letter.char}' at (${letter.x.toFixed(0)}, ${letter.y.toFixed(0)}) - slotHit: ${slotHit}`);
-      if (slotHit !== null) {
-        // Enforce ordered placement: only next slot and matching char
-        const nextSlot = letters.filter(l => l.slotIndex !== null).length;
-        const expectedChar = targetWord[nextSlot];
-        console.log(`[Slot Check] Expected slot ${nextSlot} (char '${expectedChar}'), hit slot ${slotHit} (letter '${letter.char}')`);
-        if (slotHit === nextSlot && letter.char === expectedChar) {
-        // Snap to slot center
-        const sx = slots.x + slotHit * (slots.width + slots.gap);
+    
+    // Process click
+    if (justClicked) {
+      const letter = letters[selectedIndex];
+      const nextSlot = letters.filter(l => l.slotIndex !== null).length;
+      const expectedChar = targetWord[nextSlot];
+      
+      console.log(`[Click] Letter '${letter.char}' - Expected slot ${nextSlot} (char '${expectedChar}')`);
+      
+      if (letter.char === expectedChar) {
+        // Correct! Place it in the slot
+        letter.placed = true;
+        letter.slotIndex = nextSlot;
+        const sx = slots.x + nextSlot * (slots.width + slots.gap);
         const sy = slots.y;
         letter.x = sx + slots.width / 2 - 16;
         letter.y = sy + slots.height / 2 + 16;
-        letter.slotIndex = slotHit;
-        letter.placed = true;
         letter.selected = false;
-          attempts = (typeof attempts !== 'undefined') ? attempts + 1 : 0;
-          console.log(`[Placed] Letter '${letter.char}' in slot ${slotHit}`);
-          try { sndPlace?.play().catch(()=>{}); } catch {}
-        } else {
-          // wrong order or wrong slot
-          console.warn(`[Wrong] Expected char '${expectedChar}' in slot ${nextSlot}, but got '${letter.char}' in slot ${slotHit}`);
-          try { sndError?.play().catch(()=>{}); } catch {}
-        }
+        attempts = (typeof attempts !== 'undefined') ? attempts + 1 : 0;
+        console.log(`[Placed] Letter '${letter.char}' in slot ${nextSlot}`);
+        try { sndPlace?.play().catch(()=>{}); } catch {}
       } else {
-        console.warn(`[No Slot] Letter '${letter.char}' not inside any slot`);
+        // Wrong letter - shake it and play error sound
+        console.warn(`[Wrong] Expected char '${expectedChar}' in slot ${nextSlot}, but got '${letter.char}'`);
+        try { sndError?.play().catch(()=>{}); } catch {}
       }
-      // After a confirmed release, stop dragging
-      draggingIndex = null;
     }
   }
 
