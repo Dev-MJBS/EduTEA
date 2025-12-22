@@ -420,11 +420,11 @@ socket.on('gesture_data', (data) => {
   }
 
   // NEW MECHANIC: Simple click-based selection
-  // Click only when hand TRANSITIONS from open to closed
+  // Click whenever hand is grabbing (closed) - at the exact moment of closing
   let justClicked = false;
   
-  if (cursorGrabbing && !prevCursorGrabbing) {
-    // Hand just closed (transition from open to closed)
+  if (cursorGrabbing && minHoldFrames === 1) {
+    // Hand just became grabbing (at the exact frame of closing)
     const current = letters[selectedIndex];
     if (isInsideLetter(cursorPos.x, cursorPos.y, current) && !current.placed) {
       // Click on selected letter
