@@ -250,19 +250,26 @@ draw();
 
 // Map normalized wrist x,y [0..1] to canvas coordinates
 function mapToCanvas(wx, wy) {
-  // Many cameras report wy=0 at top; canvas y=0 at top too.
-  // If movement feels inverted vertically, invert wy.
+  // Amplify movement for small hands (children)
+  // Map a smaller range of hand movement to full canvas
+  const scale = 1.5;  // Amplify hand movement by 1.5x
+  const centerX = 0.5;
+  const centerY = 0.5;
+  
   const invertY = true;
-  const x = wx * canvas.width;
-  const y = (invertY ? (1 - wy) : wy) * canvas.height;
+  const scaledX = (wx - centerX) * scale + centerX;
+  const scaledY = (wy - centerY) * scale + centerY;
+  
+  const x = Math.max(0, Math.min(canvas.width, scaledX * canvas.width));
+  const y = Math.max(0, Math.min(canvas.height, (invertY ? (1 - scaledY) : scaledY) * canvas.height));
   return { x, y };
 }
 
 function isInsideLetter(x, y, letter) {
-  // Approximate hit-box around the text
-  const w = 40; // text width approximation
-  const h = 50; // text height
-  return x >= (letter.x - 10) && x <= (letter.x + w) && y >= (letter.y - h) && y <= (letter.y + 10);
+  // Generous hit-box around the letter (easy for kids)
+  const w = 60; // text width approximation
+  const h = 70; // text height
+  return x >= (letter.x - 30) && x <= (letter.x + w) && y >= (letter.y - h) && y <= (letter.y + 20);
 }
 
 function isInsideDropZone(x, y) {
