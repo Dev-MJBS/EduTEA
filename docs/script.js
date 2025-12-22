@@ -426,13 +426,13 @@ socket.on('gesture_data', (data) => {
   if (cursorGrabbing && !prevCursorGrabbing) {
     // Hand just closed (transition from open to closed)
     const current = letters[selectedIndex];
-    if (isInsideLetter(pos.x, pos.y, current) && !current.placed) {
+    if (isInsideLetter(cursorPos.x, cursorPos.y, current) && !current.placed) {
       // Click on selected letter
       justClicked = true;
     } else {
       // Check if clicking on any other letter
       for (let i = 0; i < letters.length; i++) {
-        if (!letters[i].placed && isInsideLetter(pos.x, pos.y, letters[i])) {
+        if (!letters[i].placed && isInsideLetter(cursorPos.x, cursorPos.y, letters[i])) {
           // Select and click this letter
           letters[selectedIndex].selected = false;
           selectedIndex = i;
