@@ -38,6 +38,9 @@ try { document.getElementById('targetWord').textContent = targetWord; } catch {}
 let baseLetters = targetWord.split('');
 let shuffled = [...baseLetters].sort(() => Math.random() - 0.5);
 
+// Color palette for letters (rainbow colors)
+const letterColors = ['#ef4444', '#f97316', '#eab308', '#22c55e', '#0ea5e9', '#8b5cf6', '#ec4899', '#f59e0b'];
+
 // Letters state (start shuffled on the left side)
 let letters = shuffled.map((ch, i) => ({
   char: ch,
@@ -46,6 +49,7 @@ let letters = shuffled.map((ch, i) => ({
   selected: false,
   placed: false,
   slotIndex: null,
+  color: letterColors[i % letterColors.length],  // Assign unique color
 }));
 let selectedIndex = 0;
 letters[selectedIndex].selected = true;
@@ -220,8 +224,7 @@ function draw() {
   }
   // Draw letters
   for (const letter of letters) {
-    const color = letter.placed ? '#60a5fa' : (letter.selected ? '#34d399' : '#fbbf24');
-    ctx.fillStyle = color;
+    ctx.fillStyle = letter.color;  // Use letter's unique color
     ctx.font = 'bold 48px system-ui';
     ctx.fillText(letter.char, letter.x, letter.y);
   }
