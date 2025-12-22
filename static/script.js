@@ -398,11 +398,11 @@ socket.on('gesture_data', (data) => {
   }
   
   // NEW MECHANIC: Simple click-based selection
-  // When hand JUST opened (releaseFrames became 1) = click
+  // Click when hand CLOSES (becomes grabbing)
   let justClicked = false;
   
-  if (releaseFrames === 1 && minHoldFrames > 0) {
-    // Hand just opened - detect click
+  if (cursorGrabbing && grabFrames === GRAB_ON_THRESHOLD) {
+    // Hand just closed - detect click
     const current = letters[selectedIndex];
     if (isInsideLetter(pos.x, pos.y, current) && !current.placed) {
       // Click on selected letter
@@ -446,8 +446,6 @@ socket.on('gesture_data', (data) => {
         console.warn(`[Wrong] Expected char '${expectedChar}' in slot ${nextSlot}, but got '${letter.char}'`);
         try { sndError?.play().catch(()=>{}); } catch {}
       }
-      // Reset hold frames to prevent multiple clicks from same hand close
-      minHoldFrames = 0;
     }
   }
 
