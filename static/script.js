@@ -380,12 +380,16 @@ socket.on('gesture_data', (data) => {
   graspEl.textContent = is_grabbing ? 'Fechado' : 'Aberto';
   detectionEl.textContent = detected ? 'Sim' : 'Não';
 
-  const pos = mapToCanvas(wrist_x, wrist_y);
-  // Update cursor position and trail only if hand is detected
+  // Always update cursor position from hand if detected, otherwise stay at center
   if (detected) {
+    const pos = mapToCanvas(wrist_x, wrist_y);
     cursorPos = pos;
     cursorTrail.push({ x: pos.x, y: pos.y });
     if (cursorTrail.length > trailMax) cursorTrail.shift();
+  } else {
+    // When hand not detected, keep cursor at center (easier for child to find it)
+    cursorPos = { x: canvas.width / 2, y: canvas.height / 2 };
+    cursorTrail.length = 0;  // Clear trail when hand is lost
   }
   // Debounced grabbing state
   if (is_grabbing) {
